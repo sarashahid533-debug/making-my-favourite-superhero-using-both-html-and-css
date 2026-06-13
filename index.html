@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satoru Gojo - Interactive Profile Card</title>
+    <style>
+        /* Dark blue background for the entire page */
+        body {
+            background-color: #03fff2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            /* Option 3: Custom Domain Expansion Hand Sign Cursor using SVG data URI */
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%2300D2FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M18 22H6c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v11c0 1.1-.9 2-2 2z'/><path d='M10 14h4'/><path d='M12 12v4'/><path d='M12 2v5'/></svg> ") 16 16, auto;
+        }
+
+        /* Card Perspective Wrapper for Flip Animation */
+        .card-container {
+            perspective: 1000px; /* Gives the 3D depth effect */
+            width: 100%;
+            max-width: 450px;
+            height: 580px; /* Fixed height to match both sides */
+        }
+
+        /* Option 1: Inner Card that handles the flip */
+        .hero-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        /* Flip the card over when hovering anywhere on the container */
+        .card-container:hover .hero-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Shared Card Properties for both Front and Back faces */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden; /* Hides the reverse side during rotation */
+            border: 4px solid #FFD700;
+            border-radius: 15px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        /* FRONT SIDE STYLES */
+        .card-front {
+            background-color: rgba(20, 24, 43, 0.95);
+            padding: 20px;
+            box-shadow: 0 0 20px #8A2BE2, 0 0 40px #0000FF;
+            animation: neonPulse 3s infinite alternate;
+        }
+
+        /* Pulsing border animation changing through his technique colors */
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 15px #0000FF, 0 0 30px #0000FF; border-color: #0000FF; } 
+            50% { box-shadow: 0 0 15px #FF0000, 0 0 30px #FF0000; border-color: #FF0000; } 
+            100% { box-shadow: 0 0 25px #8A2BE2, 0 0 50px #8A2BE2; border-color: #8A2BE2; } 
+        }
+
+        /* Subtle background graphic of Gojo's Six Eyes theme */
+        .card-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://unsplash.com');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Giant yellow title with an orange shadow */
+        .hero-title {
+            color: #FFD700;
+            font-size: 3rem;
+            text-align: center;
+            margin: 10px 0 5px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 4px 4px 0px #FF6B00;
+        }
+
+        /* Tagline that transforms to Title Case */
+        .hero-tagline {
+            color: #E0E0E0;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 30px;
+            text-transform: capitalize;
+            font-size: 1.1rem;
+        }
+
+        /* Section headings in UPPERCASE with underlines */
+        .section-heading {
+            color: #FFFFFF;
+            text-transform: uppercase;
+            text-decoration: underline;
+            font-size: 1.2rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* Bold green powers */
+        .powers-list {
+            color: #00FF66;
+            font-weight: bold;
+            padding-left: 20px;
+            margin: 0 0 20px 0;
+        }
+
+        .powers-list li {
+            margin-bottom: 8px;
+        }
+
+        /* Dynamic styling for his specific techniques */
+        .technique-blue { color: #00D2FF; }
+        .technique-red { color: #FF3366; }
+        .technique-purple { color: #BF55EC; }
+
+        /* Crossed-out weaknesses */
+        .weakness-list {
+            color: #FFAAAA;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .weakness-list li {
+            text-decoration: line-through;
+            margin-bottom: 8px;
+        }
+
+        /* Tilted gold badge */
+        .gold-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #050B14;
+            font-weight: bold;
+            padding: 8px 15px;
+            position: absolute;
+            top: 25px;
+            right: -35px;
+            transform: rotate(25deg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            width: 140px;
+            text-align: center;
+            letter-spacing: 1px;
+            z-index: 3;
+        }
+
+        /* BACK SIDE STYLES */
+        .card-back {
+            background-color: #14182B;
+            transform: rotateY(180deg); /* Pre-flips the back face orientation */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 20px;
+            text-align: center;
+            border-color: #8A2BE2; /* Fixed purple border for the back face */
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.6);
+        }
+
+        /* Gojo Portrait Image Container */
+        .portrait-frame {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 4px solid #00D2FF;
+            box-shadow: 0 0 20px #00D2FF;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .portrait-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .back-title {
+            color: #FFD700;
+            font-size: 2rem;
+            margin-bottom: 15px 0 5px 0;
+            letter-spacing: 1px;
+        }
+
+        .back-subtitle {
+            color: #E0E0E0;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .back-description {
+            color: #A0A5B5;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Outer card container wrapper -->
+    <div class="card-container">
+        <div class="hero-card-inner">
+            
+            <!-- ================= FRONT FACE ================= -->
+            <div class="card-front">
+                <div class="card-bg-image"></div>
+                <div class="gold-badge">Special Grade</div>
+
+                <div class="card-content">
+                    <h1 class="hero-title">Gojo Satoru</h1>
+                    <p class="hero-tagline">don't worry, i'm the strongest.</p>
+
+                    <h2 class="section-heading">Superpowers</h2>
+                    <ul class="powers-list">
+                        <li>Limitless spatial manipulation (infinity)</li>
+                        <li>Six eyes ultimate perception</li>
+                        <li class="technique-blue">Cursed technique lapse: blue</li>
+                        <li class="technique-red">Cursed technique reversal: red</li>
+                        <li class="technique-purple">Hollow technique: purple</li>
+                        <li>Domain expansion: infinite void</li>
+                    </ul>
+
+                    <h2 class="section-heading">Weaknesses</h2>
+                    <ul class="weakness-list">
+                        <li>The prison realm sealing object</li>
+                        <li>Overreliance on automatic infinity defense</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ================= BACK FACE ================= -->
+            <div class="card-back">
+                <div class="portrait-frame">
+                    <!-- Anime-style neon/cyberpunk portrait placeholder link -->
+                    <img src="C:\Users\WIN-11\Downloads\gojo1.jpg" alt="Satoru Gojo Portrait">
+                </div>
+                
+                <div>
+                    <h2 class="back-title">Satoru Gojo</h2>
+                    <p class="back-subtitle">The Honored One</p>
+                </div>
+
+                <p class="back-description">
+                    The head of the Gojo Clan and the most powerful Jujutsu Sorcerer in history. By mixing his spatial techniques, he can delete reality or trap opponents inside absolute infinity.
+                </p>
+            </div>
+
+        </div>
+    </div>
+     <h2>video <a href="C:\Users\WIN-11\Downloads\4k dark cc gojo panel.mp4" target="_blank">Click here to watch the video</a></h2>
+    
+</body>
+</html>
+
